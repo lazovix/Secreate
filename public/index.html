@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
+  <link rel="stylesheet" href="stylesheets/font-awesome.min.css">
+
+  <title>Secreate</title>
+</head>
+<body>
+<div id="app" class="container-fluid" style="padding: 15px;">
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th scope="col" style="width: auto;">Название</th>
+      <th scope="col" style="width: 200px;">Количество</th>
+      <th scope="col" style="width: 200px;">Валюта</th>
+      <th scope="col" style="width: 200px;">Цена</th>
+      <th scope="col" style="width: 91px;"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="(item, index) in items">
+      <template v-if="index !== editIndex">
+        <td>{{ item.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.currency }}</td>
+        <td>{{ item.price }}</td>
+      </template>
+      <template v-if="index === editIndex">
+        <td style="padding: .50rem;">
+          <input v-model="item.name" type="text" name="name" class="form-control" required v-bind:class="{ 'is-invalid': invalids.name }">
+        </td>
+        <td style="padding: .50rem;">
+          <input v-model="item.quantity" type="number" name="quantity" min="1" step="1" class="form-control" required v-bind:class="{ 'is-invalid': invalids.quantity }">
+        </td>
+        <td style="padding: .50rem;">
+          <select v-model="item.currency" name="currency" class="custom-select form-control" required v-bind:class="{ 'is-invalid': invalids.currency }">
+            <option value="RUB">RUB</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+          </select>
+        </td>
+        <td style="padding: .50rem;">
+          <input v-model="item.price" type="number" name="price" min=".01" step=".01" class="form-control" required v-bind:class="{ 'is-invalid': invalids.price }">
+        </td>
+      </template>
+      <td>
+        <button v-if="editIndex === null" class="btn btn-primary btn-sm" type="button" v-on:click="onEdit(index)">
+          <i class="fa fa-pencil" aria-hidden="true"></i>
+        </button>
+        <button v-if="editIndex === index" class="btn btn-success btn-sm" type="button" v-on:click="onSave(index)">
+          <i class="fa fa-check" aria-hidden="true"></i>
+        </button>
+        <button v-if="editIndex === index || editIndex === null" class="btn btn-danger btn-sm" type="button" v-on:click="onDel(index)">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </button>
+      </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr v-if="editIndex === null">
+      <td scope="col" colspan="5" class="text-right">
+        <button class="btn btn-success btn-sm" type="button" v-on:click="onAdd()">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+        </button>
+      </td>
+    </tr>
+    <tr class="table-borderless">
+      <th scope="col" colspan="3">
+          <span class="d-flex justify-content-around align-items-center">
+            <template v-if="calcError === null">
+              <span>
+                RUB: <span class="font-weight-normal">{{ total.RUB }}</span>
+              </span>
+              <span>
+                USD: <span class="font-weight-normal">{{ total.USD }}</span>
+              </span>
+              <span>
+                EUR: <span class="font-weight-normal">{{ total.EUR }}</span>
+              </span>
+            </template>
+            <template v-if="calcError !== null">
+              <span class="alert alert-danger" role="alert" style="width: 100%; text-align: center; padding: unset; margin: unset;">
+                {{ calcError }}
+              </span>
+            </template>
+          </span>
+      </th>
+      <th scope="col" colspan="2" class="text-right">
+        <button v-if="editIndex === null && items.length > 0" class="btn btn-info btn-sm" type="button" v-on:click="onCalc()">
+          <i class="fa fa-calculator" aria-hidden="true"></i>
+          Посчитать
+        </button>
+      </th>
+    </tr>
+    </tfoot>
+  </table>
+</div>
+
+<script src="javascripts/jquery-3.4.1.slim.min.js"></script>
+<script src="javascripts/bootstrap.min.js"></script>
+<script src="javascripts/vue.min.js"></script>
+<script src="javascripts/axios.min.js"></script>
+<script src="index.js"></script>
+
+</body>
+</html>

@@ -27,6 +27,9 @@ const app = new Vue({
             });
             return Object.values(this.invalids).every(val => val === false);
         },
+        clearTotal: function () {
+            Object.keys(this.total).forEach(key => this.total[key] = null);
+        },
         onAdd: function () {
             this.editIndex = this.items.push({name: null, quantity: null, currency: null, price: null}) - 1;
         },
@@ -35,10 +38,14 @@ const app = new Vue({
         },
         onSave: function (index) {
             if (this.isValid()) {
+                this.clearTotal();
                 this.editIndex = null;
             }
         },
         onDel: function (index) {
+            if (this.editIndex === null) {
+                this.clearTotal();
+            }
             this.items.splice(index, 1);
             this.editIndex = null;
         },
@@ -46,7 +53,7 @@ const app = new Vue({
             if (this.isValid()) {
                 try {
                     this.calcError = null;
-                    Object.keys(this.total).forEach(key => this.total[key] = null);
+                    this.clearTotal();
                     const res = await axios.post('/', this.items);
                     this.total = res.data;
                 } catch (e) {
